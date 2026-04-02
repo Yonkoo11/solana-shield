@@ -1,0 +1,11 @@
+node_modules/
+dist/
+target/
+.anchor/
+.DS_Store
+*.so
+keys/
+watcher/data/
+dashboard/out/
+dashboard/.next/
+.env

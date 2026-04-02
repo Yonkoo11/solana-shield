@@ -9,3 +9,11 @@ watcher/data/
 dashboard/out/
 dashboard/.next/
 .env
+.claudeignore
+CLAUDE.md
+AGENTS.md
+.ralph/
+.claude/
+ai/
+proposals/
+article-images/

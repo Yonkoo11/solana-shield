@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { initDb, getAlerts, getAlertCount24h } from "./db";
 import { handleHeliusWebhook, setMonitoredProtocols, getMonitoredProtocols } from "./webhook";
+import { initGoldRush, isGoldRushConnected } from "./goldrush";
+import { getSafetyScore } from "./safety";
 import { ProtocolConfig } from "./types";
 
 const PORT = parseInt(process.env.PORT || "3001", 10);
@@ -21,7 +23,22 @@ app.get("/api/status", (_req, res) => {
     uptime: process.uptime(),
     protocols_monitored: protocols.length,
     protocols: protocols.map((p) => ({ name: p.name, address: p.address })),
+    dataSources: {
+      helius: true,
+      goldRush: isGoldRushConnected(),
+    },
   });
+});
+
+// A2A Safety Query — other agents call this before transacting
+app.get("/api/safety", async (req, res) => {
+  const protocol = req.query.protocol as string;
+  if (!protocol) {
+    res.status(400).json({ error: "protocol query parameter required" });
+    return;
+  }
+  const score = await getSafetyScore(protocol);
+  res.json(score);
 });
 
 // Get recent alerts (dashboard polls this)
@@ -68,6 +85,7 @@ function loadProtocolConfigs(): ProtocolConfig[] {
 
 // Initialize
 initDb();
+initGoldRush();
 const configs = loadProtocolConfigs();
 setMonitoredProtocols(configs);
 

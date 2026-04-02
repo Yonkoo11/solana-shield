@@ -1,0 +1,48 @@
+{
+  "name": "Vigil Security Agent",
+  "symbol": "VIGIL",
+  "description": "On-chain guardian protocol for Solana. Monitors protocol accounts for exploit patterns (TVL drops, authority changes, config changes, admin actions, large withdrawals). Other agents query Vigil for safety scores before transacting.",
+  "image": "https://yonkoo11.github.io/solana-shield/vigil-agent.png",
+  "external_url": "https://yonkoo11.github.io/solana-shield/",
+  "attributes": [
+    { "trait_type": "Type", "value": "Security Agent" },
+    { "trait_type": "Chain", "value": "Solana" },
+    { "trait_type": "Invariants", "value": "5" },
+    { "trait_type": "Detection Speed", "value": "<10 seconds" },
+    { "trait_type": "Data Sources", "value": "Helius + GoldRush" }
+  ],
+  "properties": {
+    "category": "agent",
+    "services": [
+      {
+        "name": "safety_check",
+        "description": "Returns protocol safety score (0-100) with risk assessment and active alerts",
+        "endpoint": "/api/safety?protocol={address}",
+        "method": "GET"
+      },
+      {
+        "name": "alert_feed",
+        "description": "Real-time exploit alert stream for monitored protocols",
+        "endpoint": "/api/alerts",
+        "method": "GET"
+      },
+      {
+        "name": "system_status",
+        "description": "Agent health check and monitoring status",
+        "endpoint": "/api/status",
+        "method": "GET"
+      }
+    ],
+    "capabilities": [
+      "TVL drop detection",
+      "Authority change detection",
+      "Large withdrawal detection",
+      "Config change detection (Drift-inspired)",
+      "Admin action detection",
+      "On-chain Guardian pause/unpause",
+      "Cross-verification via GoldRush API"
+    ],
+    "guardian_program": "2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK",
+    "source_code": "https://github.com/Yonkoo11/solana-shield"
+  }
+}

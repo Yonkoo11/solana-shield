@@ -1,0 +1,9 @@
+1:"$Sreact.fragment"
+2:I[64237,["/solana-shield/_next/static/chunks/0gwcdg220i4e6.js"],"ClientPageRoot"]
+3:I[11596,["/solana-shield/_next/static/chunks/0gwcdg220i4e6.js","/solana-shield/_next/static/chunks/0avcotwsq_z23.js"],"default"]
+6:I[72722,["/solana-shield/_next/static/chunks/0gwcdg220i4e6.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/solana-shield/_next/static/chunks/0avcotwsq_z23.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"tiAlvCoRRclBZZAgj2Wvi"}
+4:{}
+5:"$0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null

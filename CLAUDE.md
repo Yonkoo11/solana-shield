@@ -16,34 +16,39 @@
 
 ---
 
-# Solana Shield — Continuous Security Monitoring for Solana
+# Solana Shield — On-Chain Guardian Protocol for Solana
 
 ## Phase 1 Gate (MUST PASS BEFORE ANY OTHER WORK)
 
-**Core Action:** Helius webhook receives a real account-change event from a live Solana protocol, backend checks 3 invariants, Telegram bot sends an alert when one is violated.
+**Core Action:** On-chain Guardian program pauses a protocol when exploit is detected. Watcher detects via Helius webhook, alerts via Telegram, team clicks pause in dashboard, Guardian freezes the vault.
 
-**Success Test:** Self-attack a test vault on devnet. Withdraw >20% TVL in one transaction. Telegram alert fires within 10 seconds. Dashboard shows the alert with timestamp and details.
+**Success Test:** Self-attack test vault on devnet. Withdraw 80% TVL. Alert fires <10 seconds. Team pauses via Guardian. Further withdrawals blocked.
 
 **Min Tech:**
-- FastAPI backend receiving Helius webhook POSTs
-- 3 invariant checks (TVL drop >20%, authority change, single withdrawal >5% TVL)
-- Telegram bot alert
-- Basic dashboard showing alert history
+- Guardian program (Anchor/Rust) with pause/unpause/auto-unpause
+- Test vault that checks Guardian is_paused before withdraw
+- TypeScript watcher (Express) receiving Helius webhooks
+- 3 invariant checks + Telegram alerts
+- Dashboard with alert feed + one-click pause
 
 **NOT Phase 1:**
-- Auto-pause / circuit breaker (Phase 2)
-- Multi-protocol support (Phase 3)
-- Cross-chain monitoring (Phase 3)
-- Pretty dashboard design (Phase 4)
-- Landing page (Phase 4)
-- Demo video (Phase 4)
+- Auto-pause from off-chain watcher (V2 — needs threshold consensus)
+- Geyser gRPC (V2 — for sub-second detection)
+- Multi-protocol support in production
+- Invariant DSL / custom rule language
 
 ## Build Order (ENFORCED)
-1. Backend receives webhook + checks invariants + sends Telegram alert
-2. Test vault program on devnet for self-attack demo
-3. Dashboard showing real-time state + alert history
-4. Drift hack timeline replay visualization
-5. Polish + videos + submission
+1. Guardian + Test Vault programs (Anchor/Rust) ✅ DONE
+2. Watcher service (TypeScript/Express + invariants + Telegram) ✅ DONE
+3. Dashboard (Next.js + alert feed + Drift replay) ✅ DONE
+4. Deploy to devnet + self-attack demo (BLOCKED: airdrop rate limit)
+5. /design for dashboard polish
+6. Videos + submission
+
+## Build Note
+- Use `RUSTUP_TOOLCHAIN=1.90-aarch64-apple-darwin anchor build` (Cargo 1.84 can't parse edition2024)
+- Run `npm rebuild better-sqlite3` after pnpm install in watcher/
+- Program IDs: Guardian=2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK, Vault=4M9V6X4tNudhVXvJpeEaMwqBYXQUYYsyRxoP5Eotophq
 
 ## Hackathon Context
 

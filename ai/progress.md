@@ -1,7 +1,7 @@
 # Progress — Solana Shield
 
 ## Current Status
-Phase 1 core built. On-chain programs + watcher service working. Dashboard + devnet deploy next.
+Phase 1 nearly complete. All code built and tested. Devnet deploy blocked by faucet rate limit (need ~2 more SOL). Dashboard and Drift replay built and verified with screenshots.
 
 ## What Changed (Plain English)
 - Guardian program: 5 instructions (register, pause, unpause, auto-unpause crank, update pauser)
@@ -23,11 +23,19 @@ Next.js Dashboard (GitHub Pages)
 - `npm rebuild better-sqlite3` needed after pnpm install in watcher/
 - Program IDs: Guardian=2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK, Vault=4M9V6X4tNudhVXvJpeEaMwqBYXQUYYsyRxoP5Eotophq
 
+## What Changed (latest session)
+- Dashboard built: dark theme, KPI cards, alert feed polling watcher every 5s, Drift replay timeline
+- Self-attack script written and ready (scripts/self-attack.ts)
+- Devnet setup script written (scripts/setup-devnet.ts)
+- README with architecture, security design, demo instructions
+- .gitignore for keys/, data/, build artifacts
+- Verified: dashboard connects to watcher, shows live alerts with severity badges
+
 ## What's Next
-1. Deploy programs to devnet
-2. Self-attack script (deposit → drain → verify alert)
-3. Dashboard (Next.js dark theme + alert feed + Drift replay)
-4. /design for polish
+1. **Get devnet SOL** (faucet rate limited — retry in a few hours or use alternative)
+2. `solana program deploy target/deploy/guardian.so` + `test_vault.so`
+3. Run `scripts/setup-devnet.ts` then `scripts/self-attack.ts`
+4. /design for dashboard polish
 5. Videos + submission
 
 ## Session Log
@@ -36,3 +44,4 @@ Next.js Dashboard (GitHub Pages)
 | 2026-04-02 | Research verified. Project created. Idea locked. Calendar set. |
 | 2026-04-02 | Upgraded plan: on-chain guardian (not just webhook handler). Security audit of own design. |
 | 2026-04-02 | Guardian + Vault programs built and tested (15/15). Watcher service with 3 invariants verified. |
+| 2026-04-02 | Dashboard + Drift replay built. Self-attack scripts ready. README done. Devnet blocked by faucet. |

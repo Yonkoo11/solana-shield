@@ -53,13 +53,22 @@ Next.js Dashboard (GitHub Pages)
 - ADMIN_ACTION: Any admin-level instruction on monitored protocol
 - These supplement the existing 3 (TVL_DROP, AUTHORITY_CHANGE, LARGE_WITHDRAWAL)
 
-## What's Next
-1. Deploy watcher to Railway (public URL for dashboard + Helius webhook)
-2. Add CONFIG_CHANGE + ADMIN_ACTION invariants to watcher
-3. Set up Helius webhook for live monitoring on devnet vault
-4. /design for dashboard polish
-5. Create Telegram bot for live alerts
-6. Videos + submission
+## Agent Talent Show Submission (April 3 deadline)
+- GoldRush API integration: DONE (watcher/src/goldrush.ts)
+- A2A safety endpoint: DONE (GET /api/safety?protocol=X returns risk score)
+- Metaplex agent NFT: MINTED on devnet (5vcG2R9zAn2s8SuuPgHizMQq1XhKVcQ1P7fR1aFt2N3q)
+- Agent metadata: HOSTED at https://yonkoo11.github.io/solana-shield/agent.json
+- X Article draft: DONE (ai/x-article-draft.md)
+- 3 Quote RT drafts: DONE (Metaplex + Covalent + Main track)
+- USER ACTION NEEDED: Publish X Article, post 3 Quote RTs
+
+## What's Next (Colosseum Frontier, May 11)
+1. Rename to Vigil across all files (user to confirm name)
+2. Helius webhook live setup
+3. Telegram bot setup
+4. Dashboard design Phase 4-5 polish
+5. Pitch video + technical demo
+6. Submit on arena.colosseum.org
 
 ## GitHub
 - Repo: https://github.com/Yonkoo11/solana-shield

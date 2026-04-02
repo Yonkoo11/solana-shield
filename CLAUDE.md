@@ -85,15 +85,17 @@
 
 **Our angle:** Free/open-source monitoring for protocols that can't afford $2K+/month Sec3. Drift lacked even a basic audit. 99% of Solana protocols have zero monitoring.
 
-## Key Narrative: Drift Hack (April 1, 2026)
+## Key Narrative: Drift Hack (April 1, 2026) — CONFIRMED
 
-- $200M-$285M drained (amount disputed, investigation ongoing)
-- Cause UNCONFIRMED (could be key compromise, contract bug, or oracle manipulation)
-- Drift lacked a Certik audit despite $200M+ TVL
-- Detected by Lookonchain/PeckShield ~1:30 ET, but no automated response
-- Attacker bridged to Ethereum, bought ETH, still at large
+- $280M drained. Cause: social engineering of 2/5 multisig signers via durable nonces.
+- NOT a code exploit. Drift's programs worked as designed. No seed phrase compromise.
+- Mar 23: attacker set up durable nonce accounts (9 days before attack)
+- Apr 1: test transaction → 60 seconds → two pre-signed txs → admin takeover → all vaults drained
+- Manual detection (Lookonchain) took ~30 minutes. Team response ~60 minutes.
 
-**Do NOT claim Drift validates "key compromise monitoring" specifically.** The cause is unconfirmed. Claim: "regardless of cause, automated monitoring + alerting would have reduced response time from hours to seconds."
+**Pitch angle:** "The attacker ran a test transaction 60 seconds before draining $280M. Nobody was watching. With Solana Shield, that test tx fires a CRITICAL alert. 60 seconds of warning. Enough to pause and save $280M."
+
+**Do NOT claim Shield prevents social engineering.** It can't. It detects the on-chain consequences: nonce creation (9 days early), authority change, test tx (60 sec early), vault drains. Detection gives time. Time saves money.
 
 ## Technical Architecture
 

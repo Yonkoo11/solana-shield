@@ -29,13 +29,17 @@ Status: [ ] NOT STARTED
 - **Guardrail:** EVM (Euler, EigenLayer). Invariant monitoring.
 - **OZ Defender:** Dying July 2026. EVM.
 
-## Drift Hack Case Study (April 1, 2026)
-- Amount: $200M-$285M (disputed across sources)
-- Cause: UNCONFIRMED. Could be key compromise, contract bug, or oracle manipulation.
-- Key fact: Drift lacked a Certik audit despite $200M+ TVL.
-- Detection: Lookonchain/PeckShield ~1:30 ET. No automated response.
-- Attacker path: 980K SOL → JLP tokens → USDC → bridged to ETH → bought 19,913 ETH
-- Was Drift using Sec3? UNKNOWN.
+## Drift Hack Case Study (April 1, 2026) — CONFIRMED
+- Amount: $280M (confirmed by Drift post-mortem)
+- Cause: CONFIRMED — Social engineering of 2/5 multisig signers via durable nonces
+- NOT a code exploit. Programs worked as designed. No compromised seed phrases.
+- Timeline: Mar 23 (nonce accounts created) → Mar 27 (council migrated) → Mar 30 (new signer compromised) → Apr 1 (test tx, then 2 pre-signed txs 4 slots apart, all vaults drained)
+- Key signal: Attacker ran TEST TRANSACTION 1 minute before real drain. 60-second warning window.
+- Detection: Lookonchain/PeckShield ~30 min after execution. No automated monitoring caught anything.
+- Attacker path: 15+ tokens drained → Jupiter swaps → CCTP bridge to Ethereum
+- Circle criticism: Could freeze 16 legit businesses overnight but couldn't freeze stolen funds fast enough
+- Root cause: 2 out of 5 multisig signatures. That was the security for $280M.
+- Source: Drift's own post-mortem + detailed community analysis
 
 ## Fatal Flaws (acknowledged, not ignored)
 1. **False positive risk:** A wrong alert could cause panic. V1 is alert-only (no auto-pause) to mitigate.

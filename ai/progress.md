@@ -1,34 +1,38 @@
 # Progress — Solana Shield
 
 ## Current Status
-Phase 1 starting. Research complete. Project set up. Building backend.
+Phase 1 core built. On-chain programs + watcher service working. Dashboard + devnet deploy next.
 
 ## What Changed (Plain English)
-- Project folder created with all config files
-- Idea #53 locked for Colosseum Frontier Infrastructure track
-- Calendar + Reminders set (May 11 deadline, May 8 code freeze)
-- IDEAS-SUMMARY.md updated: #53 promoted to Tier 1
-- PROJECTS.md updated with Solana Shield entry
+- Guardian program: 5 instructions (register, pause, unpause, auto-unpause crank, update pauser)
+- Test vault: deposit/withdraw/change authority, blocks withdrawals when Guardian is paused
+- 15/15 Anchor tests passing (all Guardian lifecycle + vault integration + auth rejection)
+- Watcher service: Express server receiving Helius webhooks, checking 3 invariants, storing alerts in SQLite
+- Telegram alerts wired (needs bot token to test live)
+- All 3 invariant checks verified with mock data: TVL drop 80% and Large Withdrawal 80% both fire as CRITICAL
 
-## Verified Research (do not re-research)
-- Sec3 WatchTower + CircuitBreaker exists but enterprise-only ($2K-$10K/mo), stale customer list, CircuitBreaker docs 403
-- Drift hack: $200M-$285M (disputed), cause UNCONFIRMED, Drift lacked audit
-- Helius webhooks: free tier has 1 webhook + 500K credits, pricing changes Apr 7
-- Colosseum: ~1,500 submissions per hackathon, 7 tracks, startup-focused judging
-- User's vibe-scanner has reusable RPC/monitoring/alert patterns
+## Architecture (upgraded from original)
+On-chain Guardian Program (Rust/Anchor) + Test Vault
+    ↓ Helius webhook events
+TypeScript Watcher (Express) — invariant checks + alerts + SQLite
+    ↓ Polling API
+Next.js Dashboard (GitHub Pages)
 
-## Architecture
-Helius webhook → FastAPI backend (3 invariants) → Telegram bot + Dashboard
+## Build Note
+- Must use `RUSTUP_TOOLCHAIN=1.90-aarch64-apple-darwin anchor build` (Cargo 1.84 can't parse edition2024)
+- `npm rebuild better-sqlite3` needed after pnpm install in watcher/
+- Program IDs: Guardian=2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK, Vault=4M9V6X4tNudhVXvJpeEaMwqBYXQUYYsyRxoP5Eotophq
 
 ## What's Next
-Build Phase 1:
-1. FastAPI backend receiving Helius webhook POST
-2. 3 invariant checks (TVL drop >20%, authority change, large withdrawal >5% TVL)
-3. Telegram bot alerts
-4. Devnet test vault for self-attack demo
-5. Wire it together, run self-attack, verify alert fires
+1. Deploy programs to devnet
+2. Self-attack script (deposit → drain → verify alert)
+3. Dashboard (Next.js dark theme + alert feed + Drift replay)
+4. /design for polish
+5. Videos + submission
 
 ## Session Log
 | Date | What happened |
 |------|-------------|
-| 2026-04-02 | Research verified. Project created. Idea locked. Calendar set. Ready to build Phase 1. |
+| 2026-04-02 | Research verified. Project created. Idea locked. Calendar set. |
+| 2026-04-02 | Upgraded plan: on-chain guardian (not just webhook handler). Security audit of own design. |
+| 2026-04-02 | Guardian + Vault programs built and tested (15/15). Watcher service with 3 invariants verified. |

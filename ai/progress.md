@@ -24,12 +24,12 @@ Next.js Dashboard (GitHub Pages)
 - Program IDs: Guardian=2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK, Vault=4M9V6X4tNudhVXvJpeEaMwqBYXQUYYsyRxoP5Eotophq
 
 ## What Changed (latest session)
-- Dashboard built: dark theme, KPI cards, alert feed polling watcher every 5s, Drift replay timeline
-- Self-attack script written and ready (scripts/self-attack.ts)
-- Devnet setup script written (scripts/setup-devnet.ts)
-- README with architecture, security design, demo instructions
-- .gitignore for keys/, data/, build artifacts
-- Verified: dashboard connects to watcher, shows live alerts with severity badges
+- Both Anchor programs deployed to devnet and self-attack verified end-to-end
+- Dashboard deployed to GitHub Pages (https://yonkoo11.github.io/solana-shield/)
+- Drift replay page rebuilt with verified-only claims (5 sources cross-checked)
+- 5 invariant checks now working: TVL_DROP, AUTHORITY_CHANGE, LARGE_WITHDRAWAL, CONFIG_CHANGE, ADMIN_ACTION
+- CONFIG_CHANGE + ADMIN_ACTION inspired by Drift findings (phantom token + withdrawal limit + program upgrade detection)
+- All code pushed to GitHub (https://github.com/Yonkoo11/solana-shield)
 
 ## Devnet Deployment
 - Guardian: `2pizUSNyLBMDM7QNBUxFYs3dQKF1RJwKtP2BTZfbyAMK`

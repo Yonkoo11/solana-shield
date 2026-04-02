@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-// Drift hack timeline — cross-referenced against multiple sources
+// Drift hack timeline - cross-referenced against multiple sources
 // Primary: MEXC analysis, Phemex report, CoinDesk, The Block, DLNews
 const TIMELINE_EVENTS = [
   {
@@ -30,7 +30,7 @@ const TIMELINE_EVENTS = [
     source: "Phemex: 'sophisticated phishing attack exploiting durable nonce offline pre-signature mechanism'",
   },
   {
-    time: "Apr 1 — T+0",
+    time: "Apr 1 - T+0",
     title: "Admin takeover executed",
     description:
       "Pre-signed transactions execute using compromised admin access. Attacker gains control of protocol admin functions.",
@@ -43,7 +43,7 @@ const TIMELINE_EVENTS = [
     source: "Multiple sources confirm admin key compromise",
   },
   {
-    time: "Apr 1 — T+1 min",
+    time: "Apr 1 - T+1 min",
     title: "Fake token listed + withdrawal limits removed",
     description:
       "Using admin access, attacker lists worthless $CVT on Drift's spot market. Raises withdrawal limits to $500 trillion. Deposits 7.85M $CVT as 'collateral.'",
@@ -56,7 +56,7 @@ const TIMELINE_EVENTS = [
     source: "MEXC: 'artificially raised withdrawal limits to an absurd $500 trillion'",
   },
   {
-    time: "Apr 1 — T+2 min",
+    time: "Apr 1 - T+2 min",
     title: "All vaults systematically drained",
     description:
       "Attacker borrows real assets (USDC, JLP, cbBTC, USDT) against worthless $CVT collateral. TVL drops from $309M to $41M in 12 minutes.",
@@ -69,7 +69,7 @@ const TIMELINE_EVENTS = [
     source: "MEXC: 'TVL collapsed from $309M to $41M in 12 minutes'",
   },
   {
-    time: "Apr 1 — T+15 min",
+    time: "Apr 1 - T+15 min",
     title: "Funds bridged to Ethereum via CCTP",
     description:
       "Stolen assets swapped via Jupiter, then bridged to Ethereum using Circle's Cross-Chain Transfer Protocol.",
@@ -81,7 +81,7 @@ const TIMELINE_EVENTS = [
     source: "Multiple sources confirm CCTP bridge to ETH",
   },
   {
-    time: "Apr 1 — ~T+30 min",
+    time: "Apr 1 - ~T+30 min",
     title: "Lookonchain/PeckShield detect anomaly",
     description:
       "On-chain analytics firms tweet about suspicious Drift activity. Manual detection about 30 minutes after attack execution began.",
@@ -93,7 +93,7 @@ const TIMELINE_EVENTS = [
     source: "CoinDesk, The Block",
   },
   {
-    time: "Apr 1 — ~T+60 min",
+    time: "Apr 1 - ~T+60 min",
     title: "Drift team: \"This is not an April Fools joke\"",
     description:
       "Team confirms the exploit. Suspends deposits and withdrawals. Coordinates with security firms, bridges, and exchanges.",
@@ -131,14 +131,14 @@ export default function DriftReplayPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Drift Protocol Exploit</h1>
         <p className="text-gray-400 text-sm">
-          April 1, 2026 — Admin key compromise via durable nonce phishing +
+          April 1, 2026 - Admin key compromise via durable nonce phishing +
           phantom token oracle manipulation. $285M drained in 12 minutes.
         </p>
         <div className="flex gap-4 mt-4 flex-wrap">
           <Stat label="Total Loss" value="$285M" color="text-red-400" />
           <Stat label="Attack Vector" value="Phishing + Oracle" color="text-purple-400" />
           <Stat label="Detection (Actual)" value="~30 min" color="text-yellow-400" />
-          <Stat label="Detection (Shield)" value="<10 sec" color="text-emerald-400" />
+          <Stat label="Detection (Vigil)" value="<10 sec" color="text-emerald-400" />
           <Stat label="Drain Duration" value="12 min" color="text-red-400" />
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function DriftReplayPage() {
       {/* Key insight */}
       <div className="border border-emerald-500/20 rounded-xl p-6 bg-emerald-500/5">
         <h3 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-2">
-          Where Shield Would Have Caught It
+          Where Vigil Would Have Caught It
         </h3>
         <p className="text-sm text-gray-300">
           Three on-chain signals fire within seconds of the attack starting: the{" "}
@@ -155,7 +155,7 @@ export default function DriftReplayPage() {
           the <strong className="text-white">87% TVL drain</strong>. Any one of these is a CRITICAL
           alert. Together, they give a protocol team{" "}
           <strong className="text-emerald-400">minutes of warning</strong> before the damage is
-          complete — vs the 30+ minutes it took for manual detection.
+          complete. Compared to the 30+ minutes it took for manual detection.
         </p>
       </div>
 
@@ -167,7 +167,7 @@ export default function DriftReplayPage() {
         <div className="space-y-3">
           <div>
             <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-              <span>Solana Shield (automated)</span>
+              <span>Vigil (automated)</span>
               <span className="text-emerald-400">&lt;10 seconds</span>
             </div>
             <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
@@ -205,7 +205,7 @@ export default function DriftReplayPage() {
         ))}
         <div className="flex items-center gap-1.5">
           <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            Shield detects
+            Vigil detects
           </span>
         </div>
       </div>
@@ -242,7 +242,7 @@ export default function DriftReplayPage() {
                   </div>
                   {event.shieldDetects && (
                     <span className="shrink-0 ml-3 text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      Shield detects
+                      Vigil detects
                     </span>
                   )}
                 </div>
@@ -270,11 +270,11 @@ export default function DriftReplayPage() {
           The attack combined <strong className="text-white">social engineering</strong> (phishing admin
           signers via durable nonces) with <strong className="text-white">protocol exploitation</strong> (phantom
           token with fabricated oracle history used as collateral). This was not
-          purely a &quot;human error&quot; — the protocol allowed a new, thinly-traded token
+          purely a &quot;human error&quot; - the protocol allowed a new, thinly-traded token
           to be listed and used as collateral for borrowing real assets.
         </p>
         <p className="text-sm text-gray-300">
-          Solana Shield cannot prevent phishing. But it detects every on-chain
+          Vigil cannot prevent phishing. But it detects every on-chain
           consequence within seconds: the admin privilege transfer, the abnormal
           withdrawal limit change, and the vault drains. With Guardian&apos;s on-chain
           pause, the team could freeze the protocol before the drain completes.

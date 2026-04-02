@@ -1,32 +1,59 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: #030712;
-  --color-foreground: #f3f4f6;
-  --font-mono: var(--font-mono);
+:root {
+  --bg-deep: #0a0b10;
+  --bg-surface: #0e1117;
+  --bg-elevated: #131720;
+  --bg-panel: #161a24;
+  --border: rgba(100, 120, 150, 0.10);
+  --border-accent: rgba(100, 120, 150, 0.06);
+  --text-primary: #c8cdd5;
+  --text-secondary: #6b7280;
+  --text-dim: #3d4450;
+  --text-muted: #2a2f3a;
+  --red-deep: rgba(220, 38, 38, 0.06);
+  --red-core: #dc2626;
+  --red-bright: #f87171;
+  --red-glow: rgba(220, 38, 38, 0.12);
+  --amber-deep: rgba(217, 119, 6, 0.06);
+  --amber-core: #d97706;
+  --amber-bright: #fbbf24;
+  --amber-glow: rgba(217, 119, 6, 0.10);
+  --green-deep: rgba(16, 185, 129, 0.06);
+  --green-core: #10b981;
+  --green-bright: #34d399;
+  --green-glow: rgba(16, 185, 129, 0.10);
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.025;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Pulse animation for critical alerts */
-@keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+/* Status LED animations */
+@keyframes ledFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-.pulse-critical {
-  animation: pulse-red 2s ease-in-out infinite;
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-/* Slide-in for new alerts */
-@keyframes slide-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.alert-enter {
-  animation: slide-in 0.3s ease-out;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100, 120, 150, 0.15); border-radius: 2px; }

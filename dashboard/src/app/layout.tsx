@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const mono = Geist_Mono({
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const jetbrains = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Solana Shield — Guardian Protocol",
+  title: "Vigil — Guardian Protocol",
   description:
     "On-chain guardian protocol for Solana. Detect exploits. Pause protocols. Protect TVL.",
 };
@@ -19,47 +24,46 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${mono.variable} dark`}>
-      <body className="min-h-screen bg-gray-950 text-gray-100 font-mono">
-        <header className="border-b border-gray-800 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-emerald-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-                  />
-                </svg>
-              </div>
-              <h1 className="text-lg font-bold tracking-tight">
-                Solana Shield
-              </h1>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                GUARDIAN
-              </span>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+      <body className="min-h-screen text-sm" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+        {/* Header */}
+        <header
+          className="flex items-center justify-between h-12 px-5"
+          style={{
+            borderBottom: "1px solid var(--border)",
+            background: "linear-gradient(180deg, var(--bg-elevated), var(--bg-surface))",
+          }}
+        >
+          <div className="flex items-center gap-2" style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 13, letterSpacing: "0.15em", textTransform: "uppercase" as const }}>
+            {/* Logo: 2x2 grid of status cells */}
+            <div className="grid grid-cols-2 gap-[2px]">
+              <div className="w-[5px] h-[5px] rounded-[1px]" style={{ background: "var(--green-core)", boxShadow: "0 0 4px var(--green-glow)" }} />
+              <div className="w-[5px] h-[5px] rounded-[1px]" style={{ background: "var(--text-muted)" }} />
+              <div className="w-[5px] h-[5px] rounded-[1px]" style={{ background: "var(--text-muted)" }} />
+              <div className="w-[5px] h-[5px] rounded-[1px]" style={{ background: "var(--green-core)", boxShadow: "0 0 4px var(--green-glow)" }} />
             </div>
-            <nav className="flex gap-6 text-sm">
-              <a href="/" className="text-gray-400 hover:text-white transition">
-                Monitor
-              </a>
-              <a
-                href="/drift"
-                className="text-gray-400 hover:text-white transition"
-              >
-                Drift Replay
-              </a>
-            </nav>
+            VIGIL
+          </div>
+
+          <nav className="flex overflow-hidden" style={{ border: "1px solid var(--border)", borderRadius: 4, fontFamily: "var(--font-mono)", fontSize: 11, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>
+            <a href="/" className="px-4 py-1.5" style={{ color: "var(--green-bright)", background: "rgba(16,185,129,0.06)", borderRight: "1px solid var(--border)" }}>
+              Monitor
+            </a>
+            <a href="/drift" className="px-4 py-1.5 hover:text-white transition" style={{ color: "var(--text-secondary)" }}>
+              Drift Replay
+            </a>
+          </nav>
+
+          <div className="flex items-center gap-3" style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--green-bright)", letterSpacing: "0.05em" }}>
+            <span>UPTIME 99.97%</span>
+            <div
+              className="w-2 h-2 rounded-[2px]"
+              style={{ background: "var(--green-core)", boxShadow: "0 0 6px var(--green-glow)", animation: "liveBlink 1.5s infinite" }}
+            />
           </div>
         </header>
-        <main className="flex-1">{children}</main>
+
+        {children}
       </body>
     </html>
   );

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigil - Grid</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #0a0b10;
+    --bg-surface: #0e1117;
+    --bg-elevated: #131720;
+    --bg-panel: #161a24;
+    --border: rgba(100, 120, 150, 0.10);
+    --border-accent: rgba(100, 120, 150, 0.06);
+    --text-primary: #c8cdd5;
+    --text-secondary: #6b7280;
+    --text-dim: #3d4450;
+    --text-muted: #2a2f3a;
+    --red-deep: rgba(220, 38, 38, 0.06);
+    --red-core: #dc2626;
+    --red-bright: #f87171;
+    --red-glow: rgba(220, 38, 38, 0.12);
+    --amber-deep: rgba(217, 119, 6, 0.06);
+    --amber-core: #d97706;
+    --amber-bright: #fbbf24;
+    --amber-glow: rgba(217, 119, 6, 0.10);
+    --green-deep: rgba(16, 185, 129, 0.06);
+    --green-core: #10b981;
+    --green-bright: #34d399;
+    --green-glow: rgba(16, 185, 129, 0.10);
+  }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Grain */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 999;
+    pointer-events: none; opacity: 0.025;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* Header */
+  .header {
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; padding: 0 20px; height: 48px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-grid {
+    display: grid; grid-template-columns: repeat(2, 5px); gap: 2px;
+  }
+  .logo-cell {
+    width: 5px; height: 5px; border-radius: 1px;
+  }
+  .logo-cell.on { background: var(--green-core); box-shadow: 0 0 4px var(--green-glow); }
+  .logo-cell.off { background: var(--text-muted); }
+
+  .header-center { display: flex; justify-content: center; }
+  nav {
+    display: flex; gap: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+  }
+  nav a {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 5px 16px; color: var(--text-secondary);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.06em;
+    border-right: 1px solid var(--border);
+  }
+  nav a:last-child { border-right: none; }
+  nav a.active { background: rgba(16,185,129,0.06); color: var(--green-bright); }
+  nav a:hover:not(.active) { color: var(--text-primary); background: rgba(100,120,150,0.04); }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .uptime-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--green-bright); letter-spacing: 0.05em;
+  }
+  .live-indicator {
+    width: 8px; height: 8px; border-radius: 2px;
+    background: var(--green-core); box-shadow: 0 0 6px var(--green-glow);
+    animation: liveBlink 1.5s infinite;
+  }
+  @keyframes liveBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* Main layout */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr;
+    height: calc(100vh - 48px);
+    gap: 1px;
+    background: var(--border-accent);
+  }
+
+  /* Panel base */
+  .panel {
+    background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-deep) 100%);
+    position: relative;
+  }
+  .panel-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim);
+  }
+  .panel-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    padding: 1px 6px; border-radius: 2px;
+  }
+
+  /* Metrics panel - spans full width */
+  .metrics-panel {
+    grid-column: 1 / -1;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border-accent);
+  }
+  .kpi {
+    background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
+    padding: 14px 18px;
+  }
+  .kpi-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .kpi-row { display: flex; align-items: baseline; gap: 6px; }
+  .kpi-val {
+    font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600;
+  }
+  .kpi-unit { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-secondary); }
+  .kpi-val.ok { color: var(--green-bright); }
+  .kpi-val.warn { color: var(--amber-bright); }
+  .kpi-val.alert { color: var(--red-bright); }
+
+  /* Grid panel - protocol nodes */
+  .grid-panel { padding: 16px; }
+  .node-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .node {
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 10px 12px;
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-elevated));
+    position: relative; transition: all 0.2s;
+  }
+  .node:hover { border-color: rgba(100,120,150,0.2); }
+  .node.alert-active { border-color: rgba(220,38,38,0.25); box-shadow: 0 0 12px var(--red-glow); }
+  .node.warn-active { border-color: rgba(217,119,6,0.2); box-shadow: 0 0 8px var(--amber-glow); }
+
+  .node-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .node-name { font-size: 13px; font-weight: 500; }
+  .node-led {
+    width: 7px; height: 7px; border-radius: 2px;
+  }
+  .node-led.green { background: var(--green-core); box-shadow: 0 0 4px var(--green-glow); }
+  .node-led.red { background: var(--red-core); box-shadow: 0 0 6px var(--red-glow); animation: ledFlash 0.6s infinite; }
+  .node-led.amber { background: var(--amber-core); box-shadow: 0 0 5px var(--amber-glow); animation: ledFlash 1s infinite; }
+  @keyframes ledFlash { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .node-stat {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary);
+  }
+  .node-stat span { color: var(--text-dim); }
+  .node-alert-count {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    margin-top: 6px; padding: 2px 6px; border-radius: 2px;
+    display: inline-block;
+  }
+  .node-alert-count.crit { background: var(--red-deep); color: var(--red-bright); border: 1px solid rgba(220,38,38,0.12); }
+  .node-alert-count.high { background: var(--amber-deep); color: var(--amber-bright); border: 1px solid rgba(217,119,6,0.08); }
+
+  /* Alerts panel */
+  .alerts-panel {
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .alert-list { flex: 1; overflow-y: auto; }
+
+  .alert-entry {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 12px; align-items: start;
+    transition: background 0.1s;
+  }
+  .alert-entry:hover { background: rgba(100,120,150,0.03); }
+
+  .ae-sev {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 0; text-align: center; border-radius: 2px;
+  }
+  .ae-sev.critical { background: var(--red-deep); color: var(--red-bright); border: 1px solid rgba(220,38,38,0.1); }
+  .ae-sev.high { background: var(--amber-deep); color: var(--amber-bright); border: 1px solid rgba(217,119,6,0.08); }
+  .ae-time {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-dim); text-align: center; margin-top: 4px;
+  }
+  .ae-content {}
+  .ae-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .ae-desc {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary);
+  }
+  .ae-source {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-dim); margin-top: 5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ae-source::before {
+    content: ''; width: 4px; height: 4px; border-radius: 1px;
+  }
+  .ae-source.crit-src::before { background: var(--red-core); }
+  .ae-source.high-src::before { background: var(--amber-core); }
+
+  /* Status panel - bottom left */
+  .status-panel { padding: 16px; }
+  .status-rows { display: flex; flex-direction: column; gap: 6px; }
+  .status-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px;
+    background: var(--bg-elevated);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  }
+  .sr-label { color: var(--text-secondary); }
+  .sr-value { display: flex; align-items: center; gap: 6px; }
+  .sr-led { width: 5px; height: 5px; border-radius: 50%; }
+  .sr-led.g { background: var(--green-core); box-shadow: 0 0 4px var(--green-glow); }
+  .sr-led.r { background: var(--red-core); box-shadow: 0 0 4px var(--red-glow); }
+  .sr-val { color: var(--green-bright); }
+  .sr-val.warn { color: var(--amber-bright); }
+
+  /* Scrollbar */
+  .alert-list::-webkit-scrollbar { width: 3px; }
+  .alert-list::-webkit-scrollbar-track { background: transparent; }
+  .alert-list::-webkit-scrollbar-thumb { background: rgba(100,120,150,0.15); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-grid">
+      <div class="logo-cell on"></div><div class="logo-cell off"></div>
+      <div class="logo-cell off"></div><div class="logo-cell on"></div>
+    </div>
+    VIGIL
+  </div>
+  <div class="header-center">
+    <nav>
+      <a href="#" class="active">Monitor</a>
+      <a href="#">Drift Replay</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <span class="uptime-badge">UPTIME 99.97%</span>
+    <div class="live-indicator"></div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- KPI row -->
+  <div class="metrics-panel">
+    <div class="kpi">
+      <div class="kpi-label">Protocols Monitored</div>
+      <div class="kpi-row"><span class="kpi-val ok">14</span><span class="kpi-unit">nodes</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Alerts 24h</div>
+      <div class="kpi-row"><span class="kpi-val alert">23</span><span class="kpi-unit">events</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Guardian Status</div>
+      <div class="kpi-row"><span class="kpi-val ok">Online</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Detection Speed</div>
+      <div class="kpi-row"><span class="kpi-val warn">1.2</span><span class="kpi-unit">sec avg</span></div>
+    </div>
+  </div>
+
+  <!-- Protocol grid -->
+  <div class="panel grid-panel">
+    <div class="panel-header">
+      <span class="panel-title">Protocol Grid</span>
+      <span class="panel-badge" style="background:var(--green-deep);color:var(--green-bright);border:1px solid rgba(16,185,129,0.1);">14 online</span>
+    </div>
+    <div class="node-grid" style="margin-top:12px;">
+      <div class="node alert-active">
+        <div class="node-top"><span class="node-name">Marinade</span><div class="node-led red"></div></div>
+        <div class="node-stat">TVL <span>$83M</span></div>
+        <span class="node-alert-count crit">2 CRIT</span>
+      </div>
+      <div class="node alert-active">
+        <div class="node-top"><span class="node-name">Raydium</span><div class="node-led red"></div></div>
+        <div class="node-stat">TVL <span>$421M</span></div>
+        <span class="node-alert-count crit">1 CRIT</span>
+      </div>
+      <div class="node alert-active">
+        <div class="node-top"><span class="node-name">Orca</span><div class="node-led red"></div></div>
+        <div class="node-stat">TVL <span>$198M</span></div>
+        <span class="node-alert-count crit">1 CRIT</span>
+      </div>
+      <div class="node warn-active">
+        <div class="node-top"><span class="node-name">Solend</span><div class="node-led amber"></div></div>
+        <div class="node-stat">TVL <span>$156M</span></div>
+        <span class="node-alert-count high">1 HIGH</span>
+      </div>
+      <div class="node alert-active">
+        <div class="node-top"><span class="node-name">Drift</span><div class="node-led red"></div></div>
+        <div class="node-stat">TVL <span>$312M</span></div>
+        <span class="node-alert-count crit">1 CRIT</span>
+      </div>
+      <div class="node warn-active">
+        <div class="node-top"><span class="node-name">Jupiter</span><div class="node-led amber"></div></div>
+        <div class="node-stat">TVL <span>$890M</span></div>
+        <span class="node-alert-count high">1 HIGH</span>
+      </div>
+      <div class="node">
+        <div class="node-top"><span class="node-name">Mango</span><div class="node-led green"></div></div>
+        <div class="node-stat">TVL <span>$67M</span></div>
+      </div>
+      <div class="node">
+        <div class="node-top"><span class="node-name">Kamino</span><div class="node-led green"></div></div>
+        <div class="node-stat">TVL <span>$1.2B</span></div>
+      </div>
+      <div class="node">
+        <div class="node-top"><span class="node-name">Jito</span><div class="node-led green"></div></div>
+        <div class="node-stat">TVL <span>$2.1B</span></div>
+      </div>
+      <div class="node">
+        <div class="node-top"><span class="node-name">Phoenix</span><div class="node-led green"></div></div>
+        <div class="node-stat">TVL <span>$34M</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert feed -->
+  <div class="panel alerts-panel">
+    <div class="panel-header">
+      <span class="panel-title">Alert Feed</span>
+      <span class="panel-badge" style="background:var(--red-deep);color:var(--red-bright);border:1px solid rgba(220,38,38,0.1);">6 active</span>
+    </div>
+    <div class="alert-list">
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev critical">CRIT</div>
+          <div class="ae-time">14s</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">TVL Drop -$42.8M</div>
+          <div class="ae-desc">Pool 7xKX...mR9d lost 34% in 90s</div>
+          <div class="ae-source crit-src">Marinade Finance</div>
+        </div>
+      </div>
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev critical">CRIT</div>
+          <div class="ae-time">2m</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">Large Withdrawal $18.2M</div>
+          <div class="ae-desc">Tx 4nPq...vK8x exceeds 15% reserve</div>
+          <div class="ae-source crit-src">Raydium</div>
+        </div>
+      </div>
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev critical">CRIT</div>
+          <div class="ae-time">8m</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">Config Change: Fee Override</div>
+          <div class="ae-desc">fee_rate 30 -> 9999 by 9bYk...3nLp</div>
+          <div class="ae-source crit-src">Orca</div>
+        </div>
+      </div>
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev high">HIGH</div>
+          <div class="ae-time">12m</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">Admin: Markets Paused</div>
+          <div class="ae-desc">3 lending markets paused simultaneously</div>
+          <div class="ae-source high-src">Solend</div>
+        </div>
+      </div>
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev critical">CRIT</div>
+          <div class="ae-time">19m</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">Authority Transfer</div>
+          <div class="ae-desc">Upgrade auth -> 2mRx...8kVn (unverified)</div>
+          <div class="ae-source crit-src">Drift Protocol</div>
+        </div>
+      </div>
+      <div class="alert-entry">
+        <div>
+          <div class="ae-sev high">HIGH</div>
+          <div class="ae-time">31m</div>
+        </div>
+        <div class="ae-content">
+          <div class="ae-title">TVL Drop -$6.1M</div>
+          <div class="ae-desc">12% drain over 45min, 8 transactions</div>
+          <div class="ae-source high-src">Jupiter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System status -->
+  <div class="panel status-panel" style="grid-column: 1 / -1;">
+    <div class="panel-header" style="padding-left:0;">
+      <span class="panel-title">System Diagnostics</span>
+    </div>
+    <div class="status-rows" style="margin-top:10px;">
+      <div class="status-row">
+        <span class="sr-label">RPC Connection</span>
+        <span class="sr-value"><span class="sr-led g"></span><span class="sr-val">Helius Mainnet</span></span>
+      </div>
+      <div class="status-row">
+        <span class="sr-label">Block Latency</span>
+        <span class="sr-value"><span class="sr-led g"></span><span class="sr-val">420ms</span></span>
+      </div>
+      <div class="status-row">
+        <span class="sr-label">Webhook Delivery</span>
+        <span class="sr-value"><span class="sr-led g"></span><span class="sr-val">100% (24h)</span></span>
+      </div>
+      <div class="status-row">
+        <span class="sr-label">Alert Backlog</span>
+        <span class="sr-value"><span class="sr-led g"></span><span class="sr-val warn">6 pending</span></span>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

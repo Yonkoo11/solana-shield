@@ -33,6 +33,8 @@ const TYPE_LABELS: Record<string, string> = {
   TVL_DROP: "TVL Drop",
   AUTHORITY_CHANGE: "Authority Change",
   LARGE_WITHDRAWAL: "Large Withdrawal",
+  CONFIG_CHANGE: "Config Change",
+  ADMIN_ACTION: "Admin Action",
 };
 
 function timeAgo(timestamp: string): string {

@@ -2,7 +2,12 @@
 
 export type AlertSeverity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
-export type InvariantType = "TVL_DROP" | "AUTHORITY_CHANGE" | "LARGE_WITHDRAWAL";
+export type InvariantType =
+  | "TVL_DROP"
+  | "AUTHORITY_CHANGE"
+  | "LARGE_WITHDRAWAL"
+  | "CONFIG_CHANGE"
+  | "ADMIN_ACTION";
 
 export interface Alert {
   id?: number;

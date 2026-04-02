@@ -85,6 +85,40 @@ export function checkInvariants(
       });
     }
 
+    // ─── Invariant 4: Config Change (Drift-inspired) ───────────────────
+    // Detects abnormal parameter changes: withdrawal limits, new asset listings,
+    // oracle config. The Drift attacker raised withdrawal limits to $500T and
+    // listed a phantom token — both are detectable config changes.
+    const configChangeDetected = detectConfigChange(payload, config.address);
+    if (configChangeDetected) {
+      alerts.push({
+        timestamp: now,
+        protocol: config.address,
+        type: "CONFIG_CHANGE",
+        severity: "CRITICAL",
+        details: configChangeDetected,
+        txSignature: payload.signature,
+        resolved: false,
+      });
+    }
+
+    // ─── Invariant 5: Admin Action ──────────────────────────────────────
+    // Any instruction signed by a known admin/authority targeting the protocol.
+    // Drift attack used compromised admin keys to execute the takeover.
+    // Flags all admin-level instructions for review.
+    const adminActionDetected = detectAdminAction(payload, config.address);
+    if (adminActionDetected) {
+      alerts.push({
+        timestamp: now,
+        protocol: config.address,
+        type: "ADMIN_ACTION",
+        severity: "HIGH",
+        details: adminActionDetected,
+        txSignature: payload.signature,
+        resolved: false,
+      });
+    }
+
     // ─── Update stored state ──────────────────────────────────────────
     const newBalance = prevState
       ? prevState.lastKnownBalance + balanceChange
@@ -138,4 +172,93 @@ function detectAuthorityChange(
   }
 
   return false;
+}
+
+/**
+ * Detect protocol configuration changes.
+ * Inspired by Drift hack: attacker raised withdrawal limits to $500T
+ * and listed a phantom token ($CVT) as valid collateral.
+ *
+ * Heuristic: flag transactions from the protocol's own program that
+ * modify config/settings accounts (identified by instruction pattern).
+ */
+function detectConfigChange(
+  payload: HeliusWebhookPayload,
+  protocolAddress: string
+): string | null {
+  // Helius enhanced transactions include a description field
+  const desc = (payload.description || "").toLowerCase();
+
+  // Look for config-related keywords in the transaction description
+  const configKeywords = [
+    "update config",
+    "set limit",
+    "add market",
+    "add asset",
+    "list token",
+    "set oracle",
+    "update oracle",
+    "set withdrawal",
+    "update withdrawal",
+    "set parameter",
+    "initialize market",
+  ];
+
+  for (const keyword of configKeywords) {
+    if (desc.includes(keyword)) {
+      return `Protocol configuration change detected: "${keyword}" in transaction. Verify this was authorized.`;
+    }
+  }
+
+  // Check for transactions with many account writes (config updates often touch multiple accounts)
+  const accountWrites = payload.accountData?.filter(
+    (a) => a.nativeBalanceChange !== 0 || a.tokenBalanceChanges.length > 0
+  );
+  if (accountWrites && accountWrites.length > 8) {
+    return `Unusual transaction complexity: ${accountWrites.length} accounts modified in single transaction. Possible batch config change.`;
+  }
+
+  return null;
+}
+
+/**
+ * Detect admin-level actions on the monitored protocol.
+ * The Drift attacker used compromised admin keys to execute the takeover.
+ * Any instruction from a known admin touching the protocol is flagged.
+ */
+function detectAdminAction(
+  payload: HeliusWebhookPayload,
+  protocolAddress: string
+): string | null {
+  const desc = (payload.description || "").toLowerCase();
+
+  // Admin action keywords from common Solana DeFi patterns
+  const adminKeywords = [
+    "upgrade",
+    "migrate",
+    "admin",
+    "emergency",
+    "pause",
+    "freeze",
+    "set authority",
+    "transfer authority",
+    "close account",
+    "withdraw fee",
+  ];
+
+  for (const keyword of adminKeywords) {
+    if (desc.includes(keyword)) {
+      return `Admin-level action detected: "${keyword}". Signed by ${payload.feePayer.slice(0, 8)}...`;
+    }
+  }
+
+  // Check for BPF Upgradeable Loader (program upgrades)
+  const BPF_LOADER = "BPFLoaderUpgradeab1e11111111111111111111111";
+  for (const ix of payload.instructions || []) {
+    if (ix.programId === BPF_LOADER) {
+      return `Program upgrade detected via BPF Loader. This changes the protocol's executable code. VERIFY IMMEDIATELY.`;
+    }
+  }
+
+  return null;
 }

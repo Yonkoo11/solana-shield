@@ -66,22 +66,23 @@ pub mod test_vault {
 
         vault.balance = vault.balance.checked_sub(amount).ok_or(VaultError::Overflow)?;
 
-        // Transfer SOL from vault PDA to withdrawer
+        // Transfer SOL from vault PDA to withdrawer via system program CPI
         let authority_key = vault.authority;
-        let seeds = &[
-            b"vault_sol",
-            authority_key.as_ref(),
-            &[ctx.bumps.vault_sol],
-        ];
-        let signer_seeds = &[&seeds[..]];
+        let bump = ctx.bumps.vault_sol;
+        let seeds: &[&[u8]] = &[b"vault_sol", authority_key.as_ref(), &[bump]];
+        let signer_seeds = &[seeds];
 
-        **ctx.accounts.vault_sol.try_borrow_mut_lamports()? -= amount;
-        **ctx.accounts.withdrawer.try_borrow_mut_lamports()? += amount;
-
-        // We use direct lamport manipulation because vault_sol is a PDA we own.
-        // CPI transfer from PDA requires system_program which doesn't work for
-        // PDAs that aren't signers in the traditional sense.
-        let _ = signer_seeds; // Seeds available if needed for CPI
+        system_program::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.system_program.to_account_info(),
+                system_program::Transfer {
+                    from: ctx.accounts.vault_sol.to_account_info(),
+                    to: ctx.accounts.withdrawer.to_account_info(),
+                },
+                signer_seeds,
+            ),
+            amount,
+        )?;
 
         emit!(VaultWithdraw {
             vault: vault.key(),
@@ -190,6 +191,8 @@ pub struct Withdraw<'info> {
     /// CHECK: Receives withdrawn SOL.
     #[account(mut)]
     pub withdrawer: SystemAccount<'info>,
+
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
